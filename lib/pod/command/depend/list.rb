@@ -1,8 +1,8 @@
 module Pod
   class Command
-    class Depend < Command
+    class Depend
       class List < Depend
-        self.summary = 'list dependencies'
+        self.summary = "list dependencies"
 
         self.description = <<-DESC
           List all dependencies in working podfile
@@ -15,7 +15,8 @@ module Pod
         end
 
         def initialize(argv)
-          @target = argv.options('target')
+          @target = argv.option('target')
+          super
         end
 
         def run
@@ -23,15 +24,15 @@ module Pod
 
           pod_file_path = Pathname.pwd + 'Podfile'
           target_definitions = Podfile.from_file(Pathname.pwd + 'Podfile').target_definitions
-          if target.empty?
-            unless target_definitions.has_key?(target)
+          if @target
+            unless target_definitions.has_key?(@target)
               help! 'The target is not exist'
             else
-              print_target_dependencies(target_definitions[target])
+              print_target_dependencies(target_definitions[@target])
             end
           else
-            target_definitions.each do |definition|
-              unless definition.name == 'Pods'
+            target_definitions.each do |name, definition|
+              unless name == 'Pods'
                 print_target_dependencies(definition)
               end
             end

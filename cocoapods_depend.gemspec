@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.version     = CocoapodsDepend::VERSION
   s.authors     = ["Candyan"]
   s.email       = "liuyanhp@gmail.com"
-  s.homepage    = "https://github.com/cocoapods/cocoapods-depend"
+  s.homepage    = "https://github.com/candyan/cocoapods-depend"
   s.summary     = %q{CocooPods plugin which allows to quickly manage your Podfile}
   s.license     = "MIT"
 
