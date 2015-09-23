@@ -9,7 +9,7 @@ module Pod
               Examples:
 
                   $ pod depend add AFNetworking
-                  $ pod depend add AFNetworking ~>1.0.0
+                  $ pod depend add AFNetworking "~> 1.0.0"
                   $ pod depend add AFNetworking https://github.com/gowalla/AFNetworking.git --tag=1.0.0
                   $ pod depend add AFNetworking ~/Documents/AFNetworking
                   $ pod depend add JSONKit https://example.com/JSONKit.podspec
@@ -54,8 +54,8 @@ module Pod
 
           podfile.target_definitions.each do |name, definition|
             unless name == "Pods"
-              definition.dependencies.push(dependency)
-              contents.gsub("/^target\s\"#{name}\".+?end\n[\n]?/m", CocoapodsDepend::Converter.target_definition_to_ruby(definition))
+              newTargetContents = CocoapodsDepend::Converter.target_dependencies_to_ruby(definition.name, definition.dependencies.push(dependency))
+              contents = contents.gsub(/^target\s[\"|']#{name}[\"|'].+?end\n[\n]?/m, (newTargetContents + "\n\n"))
             end
           end
           podfile_path.open('w') { |f| f << contents}
@@ -93,7 +93,7 @@ module Pod
         end
 
         def local_path?(name)
-          prefixs = ['/', '~']
+          prefixs = ['/', '~/', './']
           prefixs.any? { |prefix| name.start_with?(prefix) }
         end
 
