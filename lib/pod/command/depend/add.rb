@@ -9,6 +9,7 @@ module Pod
               Examples:
 
                   $ pod depend add AFNetworking
+                  $ pod depend add AFNetworking --target=AppleWatch
                   $ pod depend add AFNetworking "~> 1.0.0"
                   $ pod depend add AFNetworking https://github.com/gowalla/AFNetworking.git --tag=1.0.0
                   $ pod depend add AFNetworking ~/Documents/AFNetworking
@@ -22,6 +23,7 @@ module Pod
 
         def self.options
           [
+            ['--target=TARGET', 'The target where you want to add the dependency'],
             ['--tag=TAG', 'The git tag you want to depend'],
             ['--commit=COMMIT', 'The git commit you want to depend'],
             ['--branch=BRANCH', 'The git branch you want to depend'],
@@ -32,6 +34,7 @@ module Pod
           @git_tag = argv.option('tag')
           @git_commit = argv.option('commit')
           @git_branch = argv.option('branch')
+          @target = argv.option('target')
           @name = argv.shift_argument
           @source = argv.shift_argument
           super
@@ -53,7 +56,7 @@ module Pod
           dependency = Dependency.new(@name, self.requirements)
 
           podfile.target_definitions.each do |name, definition|
-            unless name == "Pods"
+            if name != "Pods" && (@target == nil || @target == name)
               newTargetContents = CocoapodsDepend::Converter.target_dependencies_to_ruby(definition.name, definition.dependencies.push(dependency))
               contents = contents.gsub(/^target\s[\"|']#{name}[\"|'].+?end\n[\n]?/m, (newTargetContents + "\n\n"))
             end

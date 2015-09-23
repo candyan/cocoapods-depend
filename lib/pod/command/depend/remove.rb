@@ -9,6 +9,7 @@ module Pod
               Examples:
 
                   $ pod depend remove AFNetworking
+                  $ pod depend remove AFNetworking --target=AppleWatch
         DESC
 
         self.arguments = [
@@ -41,9 +42,8 @@ module Pod
           contents ||= File.open(podfile_path, 'r:utf-8') { |f| f.read }
 
           podfile.target_definitions.each do |name, definition|
-            unless name == "Pods"
-              newTargetDependencies = definition.dependencies
-              newTargetDependencies.delete_if { |d| d.name == @name }
+            if name != "Pods" && (@target == nil || @target == name)
+              newTargetDependencies = definition.dependencies.delete_if { |d| d.name == @name }
               newTargetContents = CocoapodsDepend::Converter.target_dependencies_to_ruby(definition.name, newTargetDependencies)
               contents = contents.gsub(/^target\s[\"|']#{name}[\"|'].+?end\n[\n]?/m, (newTargetContents + "\n\n"))
             end
