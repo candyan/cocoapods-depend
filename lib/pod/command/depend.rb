@@ -5,7 +5,6 @@ module Pod
 
       require 'pod/command/depend/add'
       require 'pod/command/depend/remove'
-      require 'pod/command/depend/update'
       require 'pod/command/depend/list'
 
       self.summary = 'Manage Podfile dependencies'

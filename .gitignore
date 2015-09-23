@@ -1,4 +1,5 @@
 .DS_Store
+install.sh
 *.gem
 *.rbc
 /.config
